@@ -113,7 +113,7 @@ void prettyPrint(miniTreeNode* _node){
 			prettyPrint(_node->nodeValue.state_if_else.state_true);
 			_indentLevel--;
 			for (size_t iter = 0; iter < _indentLevel; iter++)
-				printf("\t");
+				fprintf(_outputStream, "\t");
 			fprintf(_outputStream,"else\n");
 			_indentLevel++;
 			prettyPrint(_node->nodeValue.state_if_else.state_false);

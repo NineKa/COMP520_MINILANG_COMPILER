@@ -22,7 +22,20 @@ void cleanup(){
 void throwError(const char* _what){		//Will be invoked as program failed
 	fprintf(stderr, "\e[31;1m[Error]\e[0m %s", _what);
 	#ifdef PRINTSYMTABLE_ON_EXIT
-	// printSymbolTable(_table);
+	if (_outputStream != stdout) fclose(_outputStream);
+	if (_emitSymbol){
+		char* filePath = (char*)malloc(sizeof(char)*1024);
+		if (_outputTarget != NULL){
+			sprintf(filePath, "%s.symbol.txt", _outputTarget);
+			_outputStream = fopen(filePath, "w");
+			free(filePath);
+		}
+		printSymbolTable(_table);
+		if (_outputStream != stdout){
+			fclose(_outputStream);
+			_outputStream = stdout;
+		}
+	}
 	#endif
 	cleanup();
 	exit(1);

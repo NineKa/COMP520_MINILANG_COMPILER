@@ -285,7 +285,7 @@ void generateStatement(miniTreeNode* _state){
 					return;
 				}
 				case TYPECHECK_FLOAT : {
-					fprintf(_outputStream,"scanf(\"%%f\",&");
+					fprintf(_outputStream,"scanf(\"%%lf\",&");
 					generateExpression(exprNode);
 					fprintf(_outputStream,");\n");
 					return;
