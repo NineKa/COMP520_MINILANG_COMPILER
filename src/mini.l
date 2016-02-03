@@ -20,7 +20,7 @@ int _lineNumber = 1;
 FILE* _outputStream = NULL;
 memoryList _memlist; 
 symbolTable _table;
-char* _filename = NULL;
+const char* _filename = NULL;
 %}
 
 %%
@@ -75,49 +75,4 @@ endif            {return tENDIF;}
 
 .                {return (char)yytext[0];}
 %%
-void cleanup(){
-	if (_outputStream != stdout) fclose(_outputStream);
-	if (_memlist != NULL)		 freeList(_memlist);
-	return;
-}
-
-void throwError(const char* _what){
-	fprintf(stderr, "\e[31;1m[Error]\e[0m %s", _what);
-	#ifdef PRINTSYMTABLE_ON_EXIT
-	// printSymbolTable(_table);
-	#endif
-	cleanup();
-	exit(0);
-}
-
-int main(int argc, char const *argv[])
-{
-	_outputStream = stdout;
-	_memlist = newMemoryList();
-	_program = NULL;
-	
-	// Parsing MINI LANG
-	yyparse();
-	if (_program == NULL) {
-		cleanup();
-		exit(0);
-	}
-	
-	// Pretty Print MINI LANG
-	// prettyPrint(_program);
-	
-	// Generating Symbol Table
-	_table = newSymbolTable();
-	generateSymbolTable(_table, _program);
-	// printSymbolTable(_table);
-	scanSymbolTable(_table);
-	
-	// Type checking
-	oracleProgram(_table, _program);
-	
-	// Code Generation
-	generate(_program);
-	
-	cleanup();
-    return 0;
-}
+#include "mainFunc.c"

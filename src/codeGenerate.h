@@ -7,7 +7,7 @@
 extern memoryList    _memlist;
 extern symbolTable   _table;
 extern FILE*		 _outputStream;
-extern char*		 _filename;
+extern const char*	 _filename;
 
 size_t _codeGenerateLineIndent = 0L;
 
