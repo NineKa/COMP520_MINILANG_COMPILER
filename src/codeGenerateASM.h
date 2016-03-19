@@ -799,9 +799,21 @@ void printSegText(miniTreeNode* _list){
     quickASM("mov     ", "rsp, rbp             ", "");
     quickASM("pop     ", "rbp                  ", "Exit Stack Frame");
     fprintf(_outputStream, "\n");
+#ifdef __MACH__
+#define OS_EXIT
     quickASM("mov     ", "rax, 0x0000000002000001", "Mac OS X exit syscall code");
     quickASM("mov     ", "rdi, 0x0             ", "Normal Exit (exit code = 0)");
     quickASM("syscall ", "                     ", "Init Syscall");
+#endif
+#ifdef __linux__
+#define OS_EXIT
+	quickASM("mov     ", "rax, 0x0000000000000001", "Linux exit syscall code");
+	quickASM("mov     ", "rdi, 0x0             ", "Normal Exit (exit code = 0)");
+	quickASM("syscall ", "                     ", "Init Syscall");
+#endif
+#ifndef OS_EXIT
+#error OS exit syscall not specified
+#endif
     return;
 }
 #endif
