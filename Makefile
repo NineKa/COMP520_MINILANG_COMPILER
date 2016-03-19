@@ -1,17 +1,26 @@
 LEX = ./src/mini.l
 YACC = ./src/mini.y
 OBJ = mini
-CC = gcc
+CC = clang -DDEBUG -DASM
 FLEX = flex
 BISON = bison
+H = ./src/codeGenerate.h ./src/codeGenerateASM.h ./src/mainFunc.c ./src/memory.h ./src/prettyPrint.h ./src/symTable.h ./src/treeNode.h ./src/typeChecking.h
     
-$(OBJ) : $(LEX) $(YACC)
+all    : $(OBJ) lib
+
+$(OBJ) : $(LEX) $(YACC) $(H)
 	$(FLEX) $(LEX)
 	$(BISON) $(YACC)
 	mv mini.tab.c parser.h
-	$(CC) -std=c99 -I./src/ -g -DPRINTSYMTABLE_ON_EXIT -DDEBUG lex.yy.c -o $(OBJ) -lfl
+	$(CC) -std=c99 -I./src/ -g -DASM lex.yy.c -o $(OBJ) -ll
+	rm lex.yy.c parser.h
+
+lib    : ./src/miniLang.c
+	clang -c ./src/miniLang.c
+	ar -cvq libminiLang.a miniLang.o
+	rm miniLang.o
 
 clean :
-	rm mini lex.yy.c parser.h
+	rm -f mini libminiLang.a
 	rm -r -f mini.dSYM
-	rm *.min
+	rm -f *.min

@@ -14,7 +14,11 @@ void throwError(const char* _what);
 #include "prettyPrint.h"
 #include "symTable.h"
 #include "typeChecking.h"
+#ifdef ASM
+#include "codeGenerateASM.h"
+#else
 #include "codeGenerate.h"
+#endif
 
 miniTreeNode* _program;
 int _lineNumber = 1;

@@ -56,7 +56,11 @@ bool checkExistance(const char * filename){
     return false;
 }
 void printUsage(){
+#ifdef ASM
+	fprintf(stdout,"MINILANG Assembly(Intel Syntax) Compiler\n");
+#else
 	fprintf(stdout,"MINILANG C Compiler\n");
+#endif
 	fprintf(stdout,"Usage : ./mini [-S] [-P] -i inputPath [-o targetName]\n");
 	fprintf(stdout,"\t-S\temit symbol table\n");
 	fprintf(stdout,"\t-P\temit pretty print\n");
@@ -64,7 +68,11 @@ void printUsage(){
 	fprintf(stdout,"\t-o\tredirect stdout\n");
 	fprintf(stdout,"\t  \t\tprettyPrint File : $(outputPath).pretty.min\n");
 	fprintf(stdout,"\t  \t\tsymbolTable File : $(outputPath).symbol.txt\n");
+#ifdef ASM
+	fprintf(stdout,"\t  \t\tAssembly Code    : $(outputPath).s\n");
+#else
 	fprintf(stdout,"\t  \t\tC Code           : $(outputPath).c\n");
+#endif
 	cleanup();
 	exit(0);
 	return;
@@ -163,11 +171,20 @@ int main(int argc, char const *argv[]) {
 	// Code Generation
 	char* filePath = (char*)malloc(sizeof(char)*1024);
 	if (_outputTarget != NULL){
+#ifdef ASM
+		sprintf(filePath, "%s.s", _outputTarget);
+#else
 		sprintf(filePath, "%s.c", _outputTarget);
+#endif
 		_outputStream = fopen(filePath, "w");
 		free(filePath);
 	}
+#ifdef ASM
+	printSegData(_program);
+	printSegText(_program);
+#else
 	generate(_program);
+#endif
 	if (_outputStream != stdout){
 		fclose(_outputStream);
 		_outputStream = stdout;
